@@ -17,10 +17,10 @@ public class Chip8 {
 
 	private const ushort START_ADDRESS = 0x200;
 
-	public void LoadRom(string fileName)
+	public void LoadRom(string? fileName)
 	{
 		// Check if rom file exists.
-		if (!File.Exists(fileName))
+		if (!File.Exists(fileName) || string.IsNullOrEmpty(fileName))
 		{
 			Console.WriteLine("Could not find rom.");
 			return;
@@ -29,9 +29,16 @@ public class Chip8 {
 		// Read rom file as a byte array.
 		var rom = File.ReadAllBytes(fileName);
 
-		if (rom != null && rom.Length > 0)
+		if (rom == null || rom.Length == 0)
 		{
-			Console.WriteLine($"Rom found successfully. Size: {rom.Length}");
+			Console.WriteLine("Corrupted rom.");
+			return;
+		}
+
+		if (rom.Length > memory.Length)
+		{
+			Console.WriteLine($"Rom is larger than available memory. (CURRENT MEMORY SIZE: {memory.Length})");
+			return;
 		}
 
 		// Load the rom into memory.
