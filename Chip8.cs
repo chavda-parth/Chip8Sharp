@@ -1,4 +1,7 @@
-public class Chip8 {
+namespace Chip8Sharp;
+
+public class Chip8 
+{
 	private byte[] memory = new byte[4096]; // RAM
 	private byte[] registers = new byte[16]; // Register V0 to VF
 	private byte[] keypad = new byte[16];
@@ -8,6 +11,7 @@ public class Chip8 {
 	private byte delayTimer; // Timer
 	private byte soundTimer; // Beep timer
 	private byte stackPointer; // Pointer pointing to a location on the execution stack.
+	private byte randomByte;
 
 	private ushort index; // Register simply called I in docs.
 	private ushort pc; // Program Counter
@@ -44,6 +48,8 @@ public class Chip8 {
 		{
 			memory[FONT_START_ADDRESS + i] = font[i];
 		}
+
+		pc = ROM_START_ADDRESS;
 	}
 
 	public void LoadRom(string? fileName)
@@ -75,5 +81,16 @@ public class Chip8 {
 		{
 			memory[ROM_START_ADDRESS + i] = rom[i];
 		}
+
+		// Get ticks since unix epoch.
+		var ticks = new DateTimeOffset(DateTime.Now).Ticks;
+
+		// Get new Random instance with calculated ticks as seed.
+		var rng = new Random((int) ticks);
+
+		// Assign random byte using seeded Random object.
+		Span<byte> buffer = stackalloc byte[1];
+		rng.NextBytes(buffer);
+		randomByte = buffer[0];
 	} 
 }

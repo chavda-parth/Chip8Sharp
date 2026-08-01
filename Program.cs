@@ -1,10 +1,12 @@
-﻿public static class Program
+﻿namespace Chip8Sharp;
+
+public static class Program
 {
     public static void Main() 
     {
         Console.Write("Enter filename: ");
 
-        string? fileName = Console.ReadLine();
+        var fileName = Console.ReadLine();
 
         var chip8 = new Chip8();
 
