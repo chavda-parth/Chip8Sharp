@@ -288,4 +288,16 @@ public class Chip8
 
 		registers[x] -= registers[y];
 	}
+
+
+	// 8xy6 - SHR Vx {, Vy}
+	// Set Vx = Vx SHR 1.
+	public void Instruct_8xy6()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		registers[0xF] = (byte) (registers[x] & 0x0001);
+
+		registers[x] >>= 1;
+	}
 }
