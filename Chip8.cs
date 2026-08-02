@@ -2,19 +2,34 @@ namespace Chip8Sharp;
 
 public class Chip8 
 {
-	private byte[] memory = new byte[4096]; // RAM
-	private byte[] registers = new byte[16]; // Register V0 to VF
+	// RAM
+	private byte[] memory = new byte[4096]; 
+	
+	// Register V0 to VF
+	private byte[] registers = new byte[16]; 
+	
+    // Stack to jump to subroutines.
+    private ushort[] executionStack = new ushort[16]; 
+	
+	// Timer
+	private byte delayTimer;
+
+	// Beep timer
+	private byte soundTimer; 
+	
+	// An index on the execution stack. 
+	// Can be called stack pointer.
+	private byte sp; 
+
+	// Register simply called I in Chip8 documentation.
+	private ushort index;
+
+	// Program Counter
+	private ushort pc; 
+
 	private byte[] keypad = new byte[16];
 
-	private ushort[] executionStack = new ushort[16]; // Stack to jump to subroutines.
-	
-	private byte delayTimer; // Timer
-	private byte soundTimer; // Beep timer
-	private byte stackPointer; // Pointer pointing to a location on the execution stack.
 	private byte randomByte;
-
-	private ushort index; // Register simply called I in docs.
-	private ushort pc; // Program Counter
 	private ushort opcode; 
 
 	private bool[] video = new bool[64 * 32];
@@ -55,7 +70,8 @@ public class Chip8
 	public void LoadRom(string? fileName)
 	{
 		// Check if rom file exists.
-		if (!File.Exists(fileName) || string.IsNullOrEmpty(fileName))
+		if (!File.Exists(fileName) || 
+			string.IsNullOrEmpty(fileName))
 		{
 			Console.WriteLine("Could not find rom.");
 			return;
@@ -72,7 +88,9 @@ public class Chip8
 
 		if (rom.Length > memory.Length)
 		{
-			Console.WriteLine($"Rom is larger than available memory. (CURRENT MEMORY SIZE: {memory.Length})");
+			Console.WriteLine($"Rom is larger than available" + 
+				"memory. (CURRENT MEMORY SIZE: {memory.Length})"
+			);
 			return;
 		}
 
