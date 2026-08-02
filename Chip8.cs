@@ -34,7 +34,7 @@ public class Chip8
 
 	private bool[] video = new bool[64 * 32];
 
-	private readonly byte[] font = [
+	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 		0x20, 0x60, 0x20, 0x20, 0x70, // 1
 		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -51,7 +51,7 @@ public class Chip8
 		0xE0, 0x90, 0x90, 0x90, 0xE0, // D
 		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
-	]; 
+	}; 
 
 	private const ushort ROM_START_ADDRESS = 0x200;
 	private const ushort FONT_START_ADDRESS = 0x50;
@@ -115,7 +115,7 @@ public class Chip8
 	// CLS - Clear display.
 	public void Instruct_00E0() 
 	{
-		for (int i = 0; i < memory.Length; i++)
+		for (int i = 0; i < video.Length; i++)
 		{
 			video[i] = false;
 		}
