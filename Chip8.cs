@@ -111,4 +111,85 @@ public class Chip8
 		rng.NextBytes(buffer);
 		randomByte = buffer[0];
 	} 
+
+	// CLS - Clear display.
+	public void Instruct_00E0() 
+	{
+		for (int i = 0; i < memory.Length; i++)
+		{
+			video[i] = false;
+		}
+	}
+
+	// RET - Return from a subroutine.
+	public void Instruct_00EE() 
+	{
+		sp--;
+		pc = executionStack[sp];
+	}
+
+	// JP addr - Jump to location nnn.
+	public void Instruct_1nnn() 
+	{
+		ushort address = (ushort) (opcode & 0x0FFFu);
+
+		pc = (ushort) address;
+	}
+
+	// CALL addr - Call subroutine at location nnn.
+	public void Instruct_2nnn()
+	{
+		executionStack[sp] = pc;
+		sp++;
+
+		ushort address = (ushort) (opcode & 0x0FFF);
+		pc = address;
+	}
+
+	// SE Vx, byte - Skip next instruction if Vx == kk.
+	public void Instruct_3xkk()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte kk = (byte) (opcode & 0x00FF);
+
+		if (registers[x] == kk)
+		{
+			pc += 2;
+		}
+	}
+
+	// SNE Vx, byte - Skip next instruction if Vx != kk.
+	public void Instruct_4xkk() 
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte kk = (byte) (opcode & 0x00FF);
+
+		if (registers[x] != kk)
+		{
+			pc += 2;
+		}
+	}
+
+	// SE Vx, Vy -Skip next instruction if Vx = Vy;
+	public void Instruct_5xy0()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		if (registers[x] == registers[y])
+		{
+			pc += 2;
+		}
+	}
+
+	// LD Vx, byte - Set Vx = kk.
+	public void Instruct_6xkk()
+	{
+		byte x = (byte) ((opcode & 0x0F00) & 8);
+		byte kk = (byte) (opcode & 0x00FF);
+
+		registers[x] = kk;
+	}
+
+
 }
