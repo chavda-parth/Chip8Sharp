@@ -22,7 +22,7 @@ public class Chip8
 	private byte sp; 
 
 	// Register simply called I in Chip8 documentation.
-	private ushort index;
+	private ushort registerI;
 
 	// Program Counter
 	private ushort pc; 
@@ -361,7 +361,7 @@ public class Chip8
 	{
 		ushort address = (ushort) (opcode & 0x0FFF);
 
-		index = address;
+		registerI = address;
 	}
 
 	// Bnnn - JP V0, addr
@@ -395,9 +395,34 @@ public class Chip8
 		byte y = (byte) ((opcode & 0x00F0) >> 4);
 		byte n = (byte) (opcode & 0x000F);
 
-		for (int i = 0; i < n; i++)
+		byte xPos = (byte) (registers[x] % DisplayWidth);
+		byte yPos = (byte) (registers[y] % DisplayHeight);
+
+		registers[0xF] = 0;
+
+		for (int row = 0; row < n; row++)
 		{
-			
+			byte spriteByte = memory[registerI + row];
+
+			for (int col = 0; col < 8; col++)
+			{
+				byte spritePixel 
+					= (byte) (spriteByte & (0x80 >> col));
+				
+				var screenPos = (byte) (
+					(yPos + row) * DisplayWidth + (xPos + col)
+				);
+
+				if (spritePixel != 0)
+				{
+					if (display[screenPos] == 0xFF)
+					{
+						registers[0xF] = 1;
+					}
+
+					display[screenPos] ^= 0xFF;
+				}
+			} 
 		}
 	}
 
