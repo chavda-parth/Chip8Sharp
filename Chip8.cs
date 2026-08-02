@@ -29,10 +29,10 @@ public class Chip8
 
 	private byte[] keypad = new byte[16];
 
-	private byte randomByte;
 	private ushort opcode; 
 
-	private bool[] video = new bool[64 * 32];
+	private byte[] display 
+		= new byte[DisplayWidth * DisplayHeight];
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -53,18 +53,23 @@ public class Chip8
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	}; 
 
-	private const ushort ROM_START_ADDRESS = 0x200;
-	private const ushort FONT_START_ADDRESS = 0x50;
+	private const ushort RomStartAddress = 0x200;
+	private const ushort FontStartAddress = 0x50;
+
+	private const int DisplayWidth = 64;
+	private const int DisplayHeight = 32; 
+
+	private Random rng;
 
 	public Chip8() 
 	{
 		// Load font into memory.
 		for (int i = 0; i < font.Length; i++)
 		{
-			memory[FONT_START_ADDRESS + i] = font[i];
+			memory[FontStartAddress + i] = font[i];
 		}
 
-		pc = ROM_START_ADDRESS;
+		pc = RomStartAddress;
 	}
 
 	public void LoadRom(string? fileName)
@@ -97,28 +102,33 @@ public class Chip8
 		// Load the rom into memory.
 		for (int i = 0; i < rom.Length; i++)
 		{
-			memory[ROM_START_ADDRESS + i] = rom[i];
+			memory[RomStartAddress + i] = rom[i];
 		}
 
 		// Get ticks since unix epoch.
 		var ticks = new DateTimeOffset(DateTime.Now).Ticks;
 
 		// Get new Random instance with calculated ticks as seed.
-		var rng = new Random((int) ticks);
+		rng = new Random((int) ticks);
+	}
 
-		// Assign random byte using seeded Random object.
+	private byte GetRandomByte()
+	{
 		Span<byte> buffer = stackalloc byte[1];
 		rng.NextBytes(buffer);
-		randomByte = buffer[0];
+
+		return buffer[0];
 	} 
+
+#region Chip-8 Instructions
 
 	// 00E0 - CLS
 	// Clear display.
 	public void Instruct_00E0() 
 	{
-		for (int i = 0; i < video.Length; i++)
+		for (int i = 0; i < display.Length; i++)
 		{
-			video[i] = false;
+			display[i] = 0;
 		}
 	}
 
@@ -296,8 +306,100 @@ public class Chip8
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
 
-		registers[0xF] = (byte) (registers[x] & 0x0001);
+		registers[0xF] = (byte) (registers[x] & 0x1);
 
 		registers[x] >>= 1;
 	}
+
+	// 8xy7 - SUBN Vx, Vy
+	// Set Vx = Vy - Vx, set VF = NOT borrow.
+	public void Instruct_8xy7()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		if (registers[y] > registers[x])
+		{
+			registers[0xF] = 1;
+		}
+		else
+		{
+			registers[0xF] = 0;
+		}
+
+		registers[x] = (byte) (registers[y] - registers[x]);
+	}
+
+
+	// 8xyE - SHL Vx {, Vy}
+	// Set Vx = Vx SHL 1.
+	public void Instruct_8xyE()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		registers[0xF] = (byte) ((registers[x] & 0x80) >> 7);
+
+		registers[x] <<= 1;
+	}
+ 
+	// 9xy0 - SNE Vx, Vy
+	// Skip next instruction if Vx != Vy.
+	public void Instruct_9xy0()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		if (registers[x] != registers[y])
+		{
+			pc += 2;
+		}
+	}
+
+	// Annn - LD I, addr
+	// Set I = nnn
+	public void Instruct_Annn()
+	{
+		ushort address = (ushort) (opcode & 0x0FFF);
+
+		index = address;
+	}
+
+	// Bnnn - JP V0, addr
+	// Jump to location nnn + V0.
+	public void Instruct_Bnnn()
+	{
+		ushort address = (ushort) (opcode & 0x0FFF);
+
+		pc = (ushort) (address + registers[0]);
+	}
+
+	// Cxkk - RND Vx, byte
+	// Set Vx = random byte AND kk.
+	public void Instruct_Cxkk()
+	{
+		byte randomByte = GetRandomByte();
+		byte kk = (byte) (opcode & 0x00FF);
+
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		registers[x] = (byte) (randomByte & kk);
+	}
+
+	// Dxyn - DRW Vx, Vy, nibble
+	// Display n-byte sprite 
+	// starting at memory location I 
+	// at (Vx, Vy), set VF = collision
+	public void Instruct_Dxyn()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+		byte n = (byte) (opcode & 0x000F);
+
+		for (int i = 0; i < n; i++)
+		{
+			
+		}
+	}
+
+#endregion
 }
