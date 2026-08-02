@@ -112,7 +112,8 @@ public class Chip8
 		randomByte = buffer[0];
 	} 
 
-	// CLS - Clear display.
+	// 00E0 - CLS
+	// Clear display.
 	public void Instruct_00E0() 
 	{
 		for (int i = 0; i < video.Length; i++)
@@ -121,22 +122,25 @@ public class Chip8
 		}
 	}
 
-	// RET - Return from a subroutine.
+	// 00EE - RET
+	// Return from a subroutine.
 	public void Instruct_00EE() 
 	{
 		sp--;
 		pc = executionStack[sp];
 	}
 
-	// JP addr - Jump to location nnn.
+	// 1nnn - JP addr
+	// Jump to location nnn.
 	public void Instruct_1nnn() 
 	{
-		ushort address = (ushort) (opcode & 0x0FFFu);
+		ushort address = (ushort) (opcode & 0x0FFF);
 
 		pc = (ushort) address;
 	}
 
-	// CALL addr - Call subroutine at location nnn.
+	// 2nnn - CALL addr
+	// Call subroutine at location nnn.
 	public void Instruct_2nnn()
 	{
 		executionStack[sp] = pc;
@@ -146,7 +150,8 @@ public class Chip8
 		pc = address;
 	}
 
-	// SE Vx, byte - Skip next instruction if Vx == kk.
+	// 3xkk - SE Vx, byte
+	// Skip next instruction if Vx == kk.
 	public void Instruct_3xkk()
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
@@ -158,7 +163,8 @@ public class Chip8
 		}
 	}
 
-	// SNE Vx, byte - Skip next instruction if Vx != kk.
+	// 4xkk - SNE Vx, byte
+	// Skip next instruction if Vx != kk.
 	public void Instruct_4xkk() 
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
@@ -170,7 +176,8 @@ public class Chip8
 		}
 	}
 
-	// SE Vx, Vy -Skip next instruction if Vx = Vy;
+	// 5xy0 - SE Vx, Vy
+	// Skip next instruction if Vx = Vy;
 	public void Instruct_5xy0()
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
@@ -182,7 +189,8 @@ public class Chip8
 		}
 	}
 
-	// LD Vx, byte - Set Vx = kk.
+	// 6xkk - LD Vx, byte
+	// Set Vx = kk.
 	public void Instruct_6xkk()
 	{
 		byte x = (byte) ((opcode & 0x0F00) & 8);
@@ -191,5 +199,93 @@ public class Chip8
 		registers[x] = kk;
 	}
 
+	// 7xkk - ADD Vx, byte
+	// Set Vx = Vx + kk.
+	public void Instruct_7xkk()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte kk = (byte) (opcode & 0x00FF);
 
+		registers[x] += kk;
+	}
+
+	// 8xy0 - LD Vx, Vy
+	// Set Vx = Vy.
+	public void Instruct_8xy0()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		registers[x] = registers[y];
+	}
+
+	// 8xy1 - OR Vx, Vy
+	// Set Vx = Vx OR Vy
+	public void Instruct_8xy1()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		registers[x] |= registers[y]; 
+	}
+
+	// 8xy2 - AND Vx, Vy
+	// Set Vx = Vx AND Vy.
+	public void Instruct_8xy2() 
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		registers[x] &= registers[y];
+	}
+
+	// 8xy3 - XOR Vx, Vy
+	// Set Vx = Vx XOR Vy.
+	public void Instruct_8xy3()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		registers[x] ^= registers[y];
+	}
+
+	// 8xy4 - ADD Vx, Vy
+	// Set Vx = Vx + Vy, set VF = carry.
+	public void Instruct_8xy4()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		var result = registers[x] + registers[y];
+
+		if (result > byte.MaxValue)
+		{
+			registers[0xF] = 1;
+		}
+		else
+		{
+			registers[0xF] = 0;
+		}
+
+		registers[x] = (byte) (result & 0x00FF);
+	}
+
+	// 8xy5 - SUB Vx, Vy
+	// Set Vx = Vx - Vy, set VF = NOT borrow.
+	public void Instruct_8xy5()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+
+		if (registers[x] > registers[y])
+		{
+			registers[0xF] = 1;
+		}
+		else
+		{
+			registers[0xF] = 0;
+		}
+
+		registers[x] -= registers[y];
+	}
 }
