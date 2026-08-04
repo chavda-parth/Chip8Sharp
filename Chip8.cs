@@ -402,20 +402,19 @@ public class Chip8
 
 		for (int row = 0; row < n; row++)
 		{
-			byte spriteByte = memory[registerI + row];
+			byte pixels = memory[registerI + row];
 
 			for (int col = 0; col < 8; col++)
 			{
-				byte spritePixel 
-					= (byte) (spriteByte & (0x80 >> col));
+				byte pixel 
+					= (byte) (pixels & (0x80 >> col));
 				
-				var screenPos = (byte) (
-					(yPos + row) * DisplayWidth + (xPos + col)
-				);
+				var screenPos = 
+					(yPos + row) * DisplayWidth + (xPos + col);
 
-				if (spritePixel != 0)
+				if (pixel != 0)
 				{
-					if (display[screenPos] == 0xFF)
+					if (display[screenPos] != 0)
 					{
 						registers[0xF] = 1;
 					}
