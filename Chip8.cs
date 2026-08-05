@@ -425,5 +425,42 @@ public class Chip8
 		}
 	}
 
+	// Ex9E - SKP Vx
+	// Skip next instruction 
+	// if key with the value of Vx is pressed.
+	public void Instruct_Ex9E()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		byte key = registers[x];
+
+		if (keypad[key] != 0)
+		{
+			pc += 2;
+		}
+	}
+
+	// ExA1 - SKNP Vx
+	// Skip next instruction if key with the value of Vx is not pressed.
+	public void Instruct_ExA1()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		byte key = registers[x];
+
+		if (keypad[key] == 0)
+		{
+			pc += 2;
+		}
+	}
+
+	// Fx07 - LD Vx, DT
+	// Set Vx = delay timer value.
+	public void Instruct_Fx07()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		registers[x] = delayTimer;
+	}
 #endregion
 }
