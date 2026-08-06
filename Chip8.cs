@@ -462,5 +462,63 @@ public class Chip8
 
 		registers[x] = delayTimer;
 	}
+
+	// Fx0A - LD Vx, K
+	// Wait for a key press, store the value of the key in Vx.
+	public void Instruct_Fx0A()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		for (int i = 0; i < keypad.Length; i++)
+		{
+			if (keypad[i] != 0)
+			{
+				registers[x] = (byte) i;
+				return;
+			}
+		}
+
+		pc -= 2;
+	}
+
+	// 	Fx15 - LD DT, Vx
+	// Set delay timer = Vx.
+	public void Instruct_Fx15()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		delayTimer = registers[x];
+	}
+
+
+	// Fx18 - LD ST, Vx
+	// Set sound timer = Vx.
+	public void Instruct_Fx18()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		soundTimer = registers[x];
+	}
+
+	// Fx1E - ADD I, Vx
+	// Set I = I + Vx.
+	public void Instruct_Fx1E()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		registerI += registers[x];
+	}
+
+	// Fx29 - LD F, Vx
+	// Set I = location of sprite for digit Vx.
+	public void Instruct_Fx29()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+	
+		byte digit = registers[x];
+
+		registerI = (ushort) (FontStartAddress + (5 * digit));
+	}
+
 #endregion
 }
