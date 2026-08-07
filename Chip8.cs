@@ -32,7 +32,7 @@ public class Chip8
 	private ushort opcode; 
 
 	private byte[] display 
-		= new byte[DisplayWidth * DisplayHeight];
+		= new byte[Constants.DisplayWidth * Constants.DisplayHeight];
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -53,12 +53,6 @@ public class Chip8
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	}; 
 
-	private const ushort RomStartAddress = 0x200;
-	private const ushort FontStartAddress = 0x50;
-
-	private const int DisplayWidth = 64;
-	private const int DisplayHeight = 32; 
-
 	private Random rng;
 
 	public Chip8() 
@@ -66,10 +60,10 @@ public class Chip8
 		// Load font into memory.
 		for (int i = 0; i < font.Length; i++)
 		{
-			memory[FontStartAddress + i] = font[i];
+			memory[Constants.FontStartAddress + i] = font[i];
 		}
 
-		pc = RomStartAddress;
+		pc = Constants.RomStartAddress;
 	}
 
 	public void LoadRom(string? fileName)
@@ -102,7 +96,7 @@ public class Chip8
 		// Load the rom into memory.
 		for (int i = 0; i < rom.Length; i++)
 		{
-			memory[RomStartAddress + i] = rom[i];
+			memory[Constants.RomStartAddress + i] = rom[i];
 		}
 
 		// Get ticks since unix epoch.
@@ -395,8 +389,8 @@ public class Chip8
 		byte y = (byte) ((opcode & 0x00F0) >> 4);
 		byte n = (byte) (opcode & 0x000F);
 
-		byte xPos = (byte) (registers[x] % DisplayWidth);
-		byte yPos = (byte) (registers[y] % DisplayHeight);
+		byte xPos = (byte) (registers[x] % Constants.DisplayWidth);
+		byte yPos = (byte) (registers[y] % Constants.DisplayHeight);
 
 		registers[0xF] = 0;
 
@@ -410,7 +404,7 @@ public class Chip8
 					= (byte) (pixels & (0x80 >> col));
 				
 				var screenPos = 
-					(yPos + row) * DisplayWidth + (xPos + col);
+					(yPos + row) * Constants.DisplayWidth + (xPos + col);
 
 				if (pixel != 0)
 				{
@@ -517,7 +511,7 @@ public class Chip8
 	
 		byte digit = registers[x];
 
-		registerI = (ushort) (FontStartAddress + (5 * digit));
+		registerI = (ushort) (Constants.FontStartAddress + (5 * digit));
 	}
 
 
