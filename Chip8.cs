@@ -520,5 +520,48 @@ public class Chip8
 		registerI = (ushort) (FontStartAddress + (5 * digit));
 	}
 
+
+	// Fx33 - LD B, Vx
+	// Store BCD representation of Vx 
+	// in memory locations I, I+1, and I+2.
+	public void Instruct_Fx33()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		byte target  = registers[x];
+
+		memory[registerI] = (byte) (target / 100);
+		target %= 100;
+
+		memory[registerI + 1] = (byte) (target / 10);
+		target %= 10;
+
+		memory[registerI + 2] = target;
+	}
+
+	// Fx55 - LD [I], Vx
+	// Store registers V0 through Vx in memory starting at location I.
+	public void Instruct_Fx55()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		for (int i = 0; i <= x; i++)
+		{
+			memory[registerI + 1] = registers[i];
+		}
+	}
+
+	// Fx65 - LD Vx, [I]
+	// Read registers V0 through Vx from memory starting at location I.
+	public void Instruct_Fx65()
+	{
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+
+		for (int i = 0; i <= x; i++)
+		{
+			registers[i] = memory[registerI + i];
+		}
+	}
+
 #endregion
 }
