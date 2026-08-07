@@ -31,8 +31,8 @@ public class Chip8
 
 	private ushort opcode; 
 
-	private byte[] display 
-		= new byte[Constants.DisplayWidth * Constants.DisplayHeight];
+	private byte[] display = 
+		new byte[Constants.DisplayWidth * Constants.DisplayHeight];
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -380,9 +380,8 @@ public class Chip8
 	}
 
 	// Dxyn - DRW Vx, Vy, nibble
-	// Display n-byte sprite 
-	// starting at memory location I 
-	// at (Vx, Vy), set VF = collision
+	// Display n-byte sprite starting at memory location I at (Vx, Vy), 
+	// set VF = collision
 	public void Instruct_Dxyn()
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
@@ -400,8 +399,7 @@ public class Chip8
 
 			for (int col = 0; col < 8; col++)
 			{
-				byte pixel 
-					= (byte) (pixels & (0x80 >> col));
+				byte pixel = (byte) (pixels & (0x80 >> col));
 				
 				var screenPos = 
 					(yPos + row) * Constants.DisplayWidth + (xPos + col);
@@ -435,7 +433,8 @@ public class Chip8
 	}
 
 	// ExA1 - SKNP Vx
-	// Skip next instruction if key with the value of Vx is not pressed.
+	// Skip next instruction 
+	// if key with the value of Vx is not pressed.
 	public void Instruct_ExA1()
 	{
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
