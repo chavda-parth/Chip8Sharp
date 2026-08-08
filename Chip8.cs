@@ -53,7 +53,7 @@ public class Chip8
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	}; 
 
-	private Random rng;
+	private Random? rng;
 
 	public Chip8() 
 	{
@@ -109,10 +109,10 @@ public class Chip8
 	private byte GetRandomByte()
 	{
 		Span<byte> buffer = stackalloc byte[1];
-		rng.NextBytes(buffer);
+		rng?.NextBytes(buffer);
 
 		return buffer[0];
-	} 
+	}
 
 #region Chip-8 Instructions
 
