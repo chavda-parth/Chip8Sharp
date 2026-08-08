@@ -1,4 +1,6 @@
-﻿namespace Chip8Sharp;
+﻿using Raylib_cs;
+
+namespace Chip8Sharp;
 
 public static class Program
 {
@@ -11,5 +13,14 @@ public static class Program
         var chip8 = new Chip8();
 
         chip8.LoadRom(fileName);
+    }
+
+    public static void Start(Chip8 chip8)
+    {
+        while (!Raylib.WindowShouldClose())
+        {
+            chip8.FetchInstruction();
+            chip8.DecodeInstruction();
+        }
     }
 }

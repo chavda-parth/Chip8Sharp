@@ -554,4 +554,43 @@ public class Chip8
 	}
 
 #endregion
+
+	public void FetchInstruction()
+	{
+		byte highByte = memory[pc];
+		byte lowByte = memory[pc + 1];
+
+		pc += 2;
+
+		opcode = (ushort) ((highByte << 8) | lowByte);
+	}
+
+	public void DecodeInstruction()
+	{
+		byte firstNibble = (byte) ((opcode & 0xF000) >> 12);
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
+		byte y = (byte) ((opcode & 0x00F0) >> 4);
+		byte n = (byte) (opcode & 0x000F);
+		byte nn = (byte) (opcode & 0x00FF);
+		byte nnn = (byte) (opcode & 0x0FFF);
+
+		switch (firstNibble)
+		{
+			case 0:
+				switch (nn)
+				{
+					case 0xEE:
+						Instruct_00EE();
+						break;
+					case 0xE0:
+						Instruct_00E0();
+						break;
+				}
+				break;
+			
+			case 1:
+				Instruct_1nnn();
+				break;
+		}
+	}
 }
