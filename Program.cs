@@ -20,10 +20,27 @@ public static class Program
 
     public static void Start(Chip8 chip8)
     {
+        int windowWidth = Constants.DisplayWidth * 10;
+        int windowHeight = Constants.DisplayHeight * 10;
+
+        Raylib.InitWindow(
+            windowWidth,
+            windowHeight, 
+            "Chip8Sharp"
+        );
+
+        Raylib.SetTargetFPS(60);
+
         while (!Raylib.WindowShouldClose())
         {
-            chip8.FetchInstruction();
-            chip8.DecodeInstruction();
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.Black);
+            Raylib.DrawFPS(12, 12);
+
+
+            Raylib.EndDrawing();
         }
+
+        Raylib.CloseWindow();
     }
 }
