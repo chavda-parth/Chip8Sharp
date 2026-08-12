@@ -33,6 +33,8 @@ public class Chip8
 
 	private byte[] display = 
 		new byte[Constants.DisplayWidth * Constants.DisplayHeight];
+	
+	public IReadOnlyList<byte> Display => display;
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
