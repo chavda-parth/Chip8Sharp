@@ -66,14 +66,14 @@ public class Chip8
 		pc = Constants.RomStartAddress;
 	}
 
-	public void LoadRom(string? fileName)
+	public bool TryLoadRom(string? fileName)
 	{
 		// Check if rom file exists.
 		if (!File.Exists(fileName) || 
 			string.IsNullOrEmpty(fileName))
 		{
 			Console.WriteLine("Could not find rom.");
-			return;
+			return false;
 		}
 
 		// Read rom file as a byte array.
@@ -82,7 +82,7 @@ public class Chip8
 		if (rom == null || rom.Length == 0)
 		{
 			Console.WriteLine("Corrupted rom.");
-			return;
+			return false;
 		}
 
 		if (rom.Length > memory.Length)
@@ -90,7 +90,7 @@ public class Chip8
 			Console.WriteLine($"Rom is larger than available" + 
 				"memory. (CURRENT MEMORY SIZE: {memory.Length})"
 			);
-			return;
+			return false;
 		}
 
 		// Load the rom into memory.
@@ -104,6 +104,8 @@ public class Chip8
 
 		// Get new Random instance with calculated ticks as seed.
 		rng = new Random((int) ticks);
+
+		return true;
 	}
 
 	private byte GetRandomByte()

@@ -12,7 +12,10 @@ public static class Program
 
         var chip8 = new Chip8();
 
-        chip8.LoadRom(fileName);
+        if (chip8.TryLoadRom(fileName))
+        {
+            Start(chip8);
+        }
     }
 
     public static void Start(Chip8 chip8)
