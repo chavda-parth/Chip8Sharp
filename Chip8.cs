@@ -571,13 +571,13 @@ public class Chip8
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
 		byte y = (byte) ((opcode & 0x00F0) >> 4);
 		byte n = (byte) (opcode & 0x000F);
-		byte nn = (byte) (opcode & 0x00FF);
+		byte kk = (byte) (opcode & 0x00FF);
 		byte nnn = (byte) (opcode & 0x0FFF);
 
 		switch (firstNibble)
 		{
-			case 0:
-				switch (nn)
+			case 0x0:
+				switch (kk)
 				{
 					case 0xEE:
 						Instruct_00EE();
@@ -588,8 +588,147 @@ public class Chip8
 				}
 				break;
 			
-			case 1:
+			case 0x1:
 				Instruct_1nnn();
+				break;
+			
+			case 0x2:
+				Instruct_2nnn();
+				break;
+
+			case 0x3:
+				Instruct_3xkk();
+				break;
+			
+			case 0x4:
+				Instruct_4xkk();
+				break;
+
+			case 0x5:
+				Instruct_5xy0();
+				break;
+			
+			case 0x6:
+				Instruct_6xkk();
+				break;
+			
+			case 0x7:
+				Instruct_7xkk();
+				break;
+			
+			case 0x8:
+				switch (n)
+				{
+					case 0x0:
+						Instruct_8xy0();
+						break;
+					
+					case 0x1:
+						Instruct_8xy1();
+						break;
+
+					case 0x2:
+						Instruct_8xy2();
+						break;
+					
+					case 0x3:
+						Instruct_8xy3();
+						break;
+					
+					case 0x4:
+						Instruct_8xy4();
+						break;
+
+					case 0x5:
+						Instruct_8xy5();
+						break;
+					
+					case 0x6:
+						Instruct_8xy6();
+						break;
+					
+					case 0x7:
+						Instruct_8xy7();
+						break;
+					
+					case 0xE:
+						Instruct_8xyE();
+						break;
+				}
+				break;
+			
+			case 0x9:
+				Instruct_9xy0();
+				break;
+			
+			case 0xA:
+				Instruct_Annn();
+				break;
+
+			case 0xB:
+				Instruct_Bnnn();
+				break;
+
+			case 0xC:
+				Instruct_Cxkk();
+				break;
+
+			case 0xD:
+				Instruct_Dxyn();
+				break;
+			
+			case 0xE:
+				switch (kk)
+				{
+					case 0x9E:
+						Instruct_Ex9E();
+						break;
+
+					case 0xA1:
+						Instruct_ExA1();
+						break;
+				}
+				break;
+			
+			case 0xF:
+				switch (kk)
+				{
+					case 0x07:
+						Instruct_Fx07();
+						break;
+					
+					case 0x0A:
+						Instruct_Fx0A();
+						break;
+					
+					case 0x15:
+						Instruct_Fx15();
+						break;
+
+					case 0x18:
+						Instruct_Fx18();
+						break;
+
+					case 0x1E:
+						Instruct_Fx1E();
+						break;
+					
+					case 0x29:
+						Instruct_Fx29();
+						break;
+
+					case 0x33:
+						Instruct_Fx33();
+						break;
+
+					case 0x55:
+						Instruct_Fx55();
+						break;
+
+					case 0x65:
+						Instruct_Fx65();
+						break;
+				}
 				break;
 		}
 	}
