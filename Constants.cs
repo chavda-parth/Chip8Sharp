@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Chip8Sharp;
 
 public static class Constants
@@ -11,4 +9,6 @@ public static class Constants
 	public const int DisplayHeight = 32; 
 
 	public const int WindowScale = 10;
+
+	public const int CycleDelay = 1;
 }

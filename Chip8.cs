@@ -34,7 +34,7 @@ public class Chip8
 	private byte[] display = 
 		new byte[Constants.DisplayWidth * Constants.DisplayHeight];
 	
-	public IReadOnlyList<byte> Display => display;
+	public ReadOnlySpan<byte> Display => display;
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -559,7 +559,7 @@ public class Chip8
 
 #endregion
 
-	public void FetchInstruction()
+	private void FetchInstruction()
 	{
 		byte highByte = memory[pc];
 		byte lowByte = memory[pc + 1];
@@ -569,7 +569,7 @@ public class Chip8
 		opcode = (ushort) ((highByte << 8) | lowByte);
 	}
 
-	public void DecodeInstruction()
+	private void DecodeInstruction()
 	{
 		byte firstNibble = (byte) ((opcode & 0xF000) >> 12);
 		byte x = (byte) ((opcode & 0x0F00) >> 8);
@@ -734,6 +734,22 @@ public class Chip8
 						break;
 				}
 				break;
+		}
+	}
+
+	public void Cycle()
+	{
+		FetchInstruction();
+		DecodeInstruction();
+
+		if (delayTimer > 0)
+		{
+			--delayTimer;
+		}
+
+		if (soundTimer > 0)
+		{
+			--soundTimer;
 		}
 	}
 }
