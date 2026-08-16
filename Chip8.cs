@@ -572,11 +572,8 @@ public class Chip8
 	private void DecodeInstruction()
 	{
 		byte firstNibble = (byte) ((opcode & 0xF000) >> 12);
-		byte x = (byte) ((opcode & 0x0F00) >> 8);
-		byte y = (byte) ((opcode & 0x00F0) >> 4);
 		byte n = (byte) (opcode & 0x000F);
 		byte kk = (byte) (opcode & 0x00FF);
-		byte nnn = (byte) (opcode & 0x0FFF);
 
 		switch (firstNibble)
 		{
@@ -609,7 +606,10 @@ public class Chip8
 				break;
 
 			case 0x5:
-				Instruct_5xy0();
+				if (n == 0)
+				{
+					Instruct_5xy0();
+				}
 				break;
 			
 			case 0x6:
@@ -662,7 +662,10 @@ public class Chip8
 				break;
 			
 			case 0x9:
-				Instruct_9xy0();
+				if (n == 0)
+				{
+					Instruct_9xy0();
+				}
 				break;
 			
 			case 0xA:
