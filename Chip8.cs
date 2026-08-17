@@ -401,12 +401,27 @@ public class Chip8
 		{
 			byte pixels = memory[registerI + row];
 
+			var calculatedY = yPos + row;
+
+			if (calculatedY >= Constants.DisplayHeight) 
+			{
+				Console.WriteLine($"Clipping y. Value: {calculatedY}");
+				continue;
+			}
+
 			for (int col = 0; col < 8; col++)
 			{
+				var calculatedX = xPos + col;
+
+				if (calculatedX >= Constants.DisplayWidth) 
+				{
+					Console.WriteLine($"Clipping x. Value: {calculatedX}");
+				}
+
 				byte pixel = (byte) (pixels & (0x80 >> col));
 				
 				var screenPos = 
-					(yPos + row) * Constants.DisplayWidth + (xPos + col);
+					calculatedY * Constants.DisplayWidth + calculatedX;
 
 				if (pixel != 0)
 				{

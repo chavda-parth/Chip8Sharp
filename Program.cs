@@ -33,14 +33,6 @@ public static class Program
 
         Console.WriteLine("Display coordinates: ");
 
-        for (int i = 0; i < 100; i++)
-        {
-            int col = i % Constants.DisplayWidth;
-            int row  = i / Constants.DisplayWidth;
-
-            Console.WriteLine($"{i}: [{row}, {col}]");
-        }
-
         while (!Raylib.WindowShouldClose())
         {
             Raylib.BeginDrawing();
