@@ -31,8 +31,6 @@ public static class Program
 
         var lastCycleTime = DateTime.UtcNow;
 
-        Console.WriteLine("Display coordinates: ");
-
         while (!Raylib.WindowShouldClose())
         {
             Raylib.BeginDrawing();
@@ -51,7 +49,7 @@ public static class Program
 
                 for (int i = 0; i < chip8.Display.Length; i++)
                 {
-                    if (chip8.Display[i] != 0)
+                    if (chip8.Display[i])
                     {
                         int xPos = 
                             (i % Constants.DisplayWidth) * Constants.WindowScale;

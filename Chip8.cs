@@ -3,13 +3,13 @@ namespace Chip8Sharp;
 public class Chip8 
 {
 	// RAM
-	private byte[] memory = new byte[4096]; 
+	private readonly byte[] memory = new byte[4096]; 
 	
 	// Register V0 to VF
-	private byte[] registers = new byte[16]; 
+	private readonly byte[] registers = new byte[16]; 
 	
     // Stack to jump to subroutines.
-    private ushort[] executionStack = new ushort[16]; 
+    private readonly ushort[] executionStack = new ushort[16]; 
 	
 	// Timer
 	private byte delayTimer;
@@ -27,14 +27,14 @@ public class Chip8
 	// Program Counter
 	private ushort pc; 
 
-	private byte[] keypad = new byte[16];
+	private readonly byte[] keypad = new byte[16];
 
 	private ushort opcode; 
 
-	private byte[] display = 
-		new byte[Constants.DisplayWidth * Constants.DisplayHeight];
-	
-	public ReadOnlySpan<byte> Display => display;
+	private readonly bool[] display = 
+		new bool[Constants.DisplayWidth * Constants.DisplayHeight];
+
+	public ReadOnlySpan<bool> Display => display;
 
 	private readonly byte[] font = new byte[] {
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -126,7 +126,7 @@ public class Chip8
 	{
 		for (int i = 0; i < display.Length; i++)
 		{
-			display[i] = 0;
+			display[i] = false;
 		}
 	}
 
@@ -425,12 +425,12 @@ public class Chip8
 
 				if (pixel != 0)
 				{
-					if (display[screenPos] != 0)
+					if (display[screenPos])
 					{
 						registers[0xF] = 1;
 					}
 
-					display[screenPos] ^= 0xFF;
+					display[screenPos] ^= true;
 				}
 			} 
 		}
