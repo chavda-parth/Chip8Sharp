@@ -201,7 +201,7 @@ public class Chip8
 	// Set Vx = kk.
 	public void Instruct_6xkk()
 	{
-		byte x = (byte) ((opcode & 0x0F00) & 8);
+		byte x = (byte) ((opcode & 0x0F00) >> 8);
 		byte kk = (byte) (opcode & 0x00FF);
 
 		registers[x] = kk;
