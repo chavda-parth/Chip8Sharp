@@ -36,7 +36,8 @@ public class Chip8
 
 	public ReadOnlySpan<bool> Display => display;
 
-	private readonly byte[] font = new byte[] {
+	private readonly byte[] font = new byte[] 
+	{
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 		0x20, 0x60, 0x20, 0x20, 0x70, // 1
 		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -89,9 +90,8 @@ public class Chip8
 
 		if (rom.Length > memory.Length)
 		{
-			Console.WriteLine($"Rom is larger than available" + 
-				"memory. (CURRENT MEMORY SIZE: {memory.Length})"
-			);
+			Console.WriteLine($"Rom is larger than available memory." + 
+				"(CURRENT MEMORY SIZE: {memory.Length})");
 			return false;
 		}
 
