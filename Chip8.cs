@@ -416,6 +416,7 @@ public class Chip8
 				if (calculatedX >= Constants.DisplayWidth) 
 				{
 					Console.WriteLine($"Clipping x. Value: {calculatedX}");
+					continue;
 				}
 
 				byte pixel = (byte) (pixels & (0x80 >> col));
@@ -556,7 +557,7 @@ public class Chip8
 
 		for (int i = 0; i <= x; i++)
 		{
-			memory[registerI + 1] = registers[i];
+			memory[registerI + i] = registers[i];
 		}
 	}
 
