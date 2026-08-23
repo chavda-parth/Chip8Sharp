@@ -287,3 +287,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Roms Folder (Don't want to unknowingly land up in trouble.)
+[Rr]oms/

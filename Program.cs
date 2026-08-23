@@ -10,7 +10,7 @@ public static class Program
         var fileName = Console.ReadLine();
         var chip8 = new Chip8();
 
-        if (chip8.TryLoadRom(fileName))
+        if (chip8.TryLoadRom(Path.Combine("roms", fileName ?? "")))
         {
             Start(chip8);
         }
