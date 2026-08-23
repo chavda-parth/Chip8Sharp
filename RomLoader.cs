@@ -47,7 +47,7 @@ public static class RomLoader
                         Console.Write("  ");
                     }
 
-                    Console.WriteLine(fileNames[i]);
+                    Console.WriteLine(Path.GetFileName(fileNames[i]));
                 }
 
                 var key = Console.ReadKey().Key;
