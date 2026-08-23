@@ -75,7 +75,7 @@ public class Chip8
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	};
 
-    private Random? rng;
+    private readonly Random rng = new Random();
 
     public bool RomLoaded { get; private set; } = false; 
 
@@ -105,12 +105,6 @@ public class Chip8
         }
 
         RomLoaded = true;
-
-        // Get ticks since unix epoch.
-        var ticks = new DateTimeOffset(DateTime.Now).Ticks;
-
-        // Get new Random instance with calculated ticks as seed.
-        rng = new Random((int)ticks);
     }
 
     private byte GetRandomByte()
