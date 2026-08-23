@@ -402,7 +402,6 @@ public class Chip8
 
             if (calculatedY >= Constants.DisplayHeight)
             {
-                Console.WriteLine($"Clipping y. Value: {calculatedY}");
                 continue;
             }
 
@@ -412,7 +411,6 @@ public class Chip8
 
                 if (calculatedX >= Constants.DisplayWidth)
                 {
-                    Console.WriteLine($"Clipping x. Value: {calculatedX}");
                     continue;
                 }
 
