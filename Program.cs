@@ -27,13 +27,16 @@ public static class Program
 
     public static void Main()
     {
-        Console.Write("Enter filename: ");
-        var fileName = Console.ReadLine();
         var chip8 = new Chip8();
 
-        if (chip8.TryLoadRom(Path.Combine("roms", fileName ?? "")))
+        if (RomLoader.TryGetRom(out var rom) && rom != null)
         {
-            Start(chip8);
+            chip8.LoadRom(rom);
+
+            if (chip8.RomLoaded)
+            {
+                Start(chip8);
+            }
         }
     }
 

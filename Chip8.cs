@@ -77,6 +77,8 @@ public class Chip8
 
     private Random? rng;
 
+    public bool RomLoaded { get; private set; } = false; 
+
     public Chip8()
     {
         // Load font into memory.
@@ -86,47 +88,29 @@ public class Chip8
         }
 
         pc = Constants.RomStartAddress;
+
     }
 
-    public bool TryLoadRom(string? fileName)
+    public void LoadRom(byte[] rom)
     {
-        // Check if rom file exists.
-        if (!File.Exists(fileName) ||
-            string.IsNullOrEmpty(fileName))
-        {
-            Console.WriteLine("Could not find rom.");
-            return false;
-        }
-
-        // Read rom file as a byte array.
-        var rom = File.ReadAllBytes(fileName);
-
-        if (rom == null || rom.Length == 0)
-        {
-            Console.WriteLine("Corrupted rom.");
-            return false;
-        }
-
         if (rom.Length > memory.Length)
         {
-            Console.WriteLine($"Rom is larger than available memory." +
-                "(CURRENT MEMORY SIZE: {memory.Length})");
-            return false;
+            Console.WriteLine("Rom is too large. Aborting.");
+            return;
         }
 
-        // Load the rom into memory.
         for (int i = 0; i < rom.Length; i++)
         {
             memory[Constants.RomStartAddress + i] = rom[i];
         }
+
+        RomLoaded = true;
 
         // Get ticks since unix epoch.
         var ticks = new DateTimeOffset(DateTime.Now).Ticks;
 
         // Get new Random instance with calculated ticks as seed.
         rng = new Random((int)ticks);
-
-        return true;
     }
 
     private byte GetRandomByte()

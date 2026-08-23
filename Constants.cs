@@ -11,4 +11,6 @@ public static class Constants
 	public const int WindowScale = 15;
 
 	public const int CycleDelay = 1;
+
+	public const string RomsDir = "roms";
 }
